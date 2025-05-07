@@ -1,0 +1,190 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>ShelfLife – Recipes for {{ingredient}}</title>-->
+<!--    <link rel="stylesheet" href="/styles.css">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<nav>-->
+<!--    <div class="nav-container">-->
+<!--        <div class="logo">ShelfLife</div>-->
+<!--        <div class="nav-links">-->
+<!--            <a href="/">Home</a>-->
+<!--            <a href="/foods">Inventory</a>-->
+<!--            <a href="/recipes?ingredient={{ingredient}}" class="active">Recipes</a>-->
+<!--            <a href="/about">About</a>-->
+<!--            <a href="/contact">Contact</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div class="hero small">-->
+<!--    <h1>Recipes with "{{ingredient}}"</h1>-->
+<!--    <p>Discover delicious meals you can make</p>-->
+<!--</div>-->
+
+<!--<div class="container">-->
+<!--    <div id="recipe-container">-->
+<!--        <div style="text-align: center; padding: 2rem;">-->
+<!--            <div class="loader"></div>-->
+<!--            <p>Loading recipes...</p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        // Get the ingredient from the page-->
+<!--        var ingredient = "{{ingredient}}";-->
+
+<!--        if (ingredient.trim() === "") {-->
+<!--            $("#recipe-container").html("<p>Please select an ingredient to find recipes.</p>");-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Make the AJAX request to TheMealDB API-->
+<!--        $.ajax({-->
+<!--            url: "https://www.themealdb.com/api/json/v1/1/filter.php",-->
+<!--            method: "GET",-->
+<!--            data: { i: ingredient },-->
+<!--            dataType: "json",-->
+<!--            success: function(response) {-->
+<!--                // Check if meals were found-->
+<!--                if (response.meals && response.meals.length > 0) {-->
+<!--                    var html = "<div class='card-grid'>";-->
+
+<!--                    // Loop through each meal and create a card-->
+<!--                    response.meals.forEach(function(meal) {-->
+<!--                        html += "<div class='card'>";-->
+<!--                        html += "<img src='" + meal.strMealThumb + "' alt='" + meal.strMeal + "'>";-->
+<!--                        html += "<div class='card-content'>";-->
+<!--                        html += "<h3>" + meal.strMeal + "</h3>";-->
+<!--                        html += "<a href='https://www.themealdb.com/meal/" + meal.idMeal + "' target='_blank' class='btn btn-recipe' style='margin-top: 1rem;'>View Recipe</a>";-->
+<!--                        html += "</div></div>";-->
+<!--                    });-->
+
+<!--                    html += "</div>";-->
+<!--                    $("#recipe-container").html(html);-->
+<!--                } else {-->
+<!--                    $("#recipe-container").html("<div class='card'><div class='card-content'><h3>No recipes found</h3><p>We couldn't find any recipes for '" + ingredient + "'. Try another ingredient!</p></div></div>");-->
+<!--                }-->
+<!--            },-->
+<!--            error: function(xhr, status, error) {-->
+<!--                $("#recipe-container").html("<div class='card'><div class='card-content'><h3>Error</h3><p>There was a problem loading recipes. Please try again later.</p></div></div>");-->
+<!--                console.error("API Error:", error);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShelfLife – Recipes</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <div class="logo">ShelfLife</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/foods">Inventory</a>
+            <a href="/recipes" class="active">Recipes</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </div>
+</nav>
+<div class="hero small">
+    <h1>{{#ingredient}}Recipes with "{{ingredient}}"{{/ingredient}}{{^ingredient}}Recipe Search{{/ingredient}}</h1>
+    <p>Discover delicious meals you can make</p>
+</div>
+<div class="container">
+    <div style="margin-bottom: 2rem;">
+        <form id="search-form" style="display: flex; gap: 1rem; align-items: flex-end;">
+            <div style="flex-grow: 1;">
+                <label for="ingredient-search">Search by Ingredient</label>
+                <input id="ingredient-search" type="text" name="ingredient" value="{{ingredient}}" placeholder="Enter an ingredient..." required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <div id="recipe-container">
+        {{#ingredient}}
+            <div style="text-align: center; padding: 2rem;">
+                <div class="loader"></div>
+                <p>Loading recipes for "{{ingredient}}"...</p>
+            </div>
+        {{/ingredient}}
+        {{^ingredient}}
+            <div class="card">
+                <div class="card-content" style="text-align: center;">
+                    <h3>Search for Recipes</h3>
+                    <p>Enter an ingredient above to find delicious recipes!</p>
+                </div>
+            </div>
+        {{/ingredient}}
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        // Handle form submission
+        $('#search-form').submit(function(e) {
+            e.preventDefault();
+            const ingredient = $('#ingredient-search').val().trim();
+            if (ingredient) {
+                window.location.href = "/recipes?ingredient=" + encodeURIComponent(ingredient);
+            }
+        });
+
+        // Get the ingredient from the page
+        var ingredient = "{{ingredient}}";
+        if (ingredient.trim() === "") {
+            return;
+        }
+
+        // Make the AJAX request to TheMealDB API
+        $.ajax({
+            url: "https://www.themealdb.com/api/json/v1/1/filter.php",
+            method: "GET",
+            data: { i: ingredient },
+            dataType: "json",
+            success: function(response) {
+                // Check if meals were found
+                if (response.meals && response.meals.length > 0) {
+                    var html = "<div class='card-grid'>";
+                    // Loop through each meal and create a card
+                    response.meals.forEach(function(meal) {
+                        html += "<div class='card'>";
+                        html += "<img src='" + meal.strMealThumb + "' alt='" + meal.strMeal + "'>";
+                        html += "<div class='card-content'>";
+                        html += "<h3>" + meal.strMeal + "</h3>";
+                        html += "<a href='https://www.themealdb.com/meal/" + meal.idMeal + "' target='_blank' class='btn btn-recipe' style='margin-top: 1rem;'>View Recipe</a>";
+                        html += "</div></div>";
+                    });
+                    html += "</div>";
+                    $("#recipe-container").html(html);
+                } else {
+                    $("#recipe-container").html("<div class='card'><div class='card-content'><h3>No recipes found</h3><p>We couldn't find any recipes for '" + ingredient + "'. Try another ingredient!</p></div></div>");
+                }
+            },
+            error: function(xhr, status, error) {
+                $("#recipe-container").html("<div class='card'><div class='card-content'><h3>Error</h3><p>There was a problem loading recipes. Please try again later.</p></div></div>");
+                console.error("API Error:", error);
+            }
+        });
+    });
+</script>
+</body>
+</html>

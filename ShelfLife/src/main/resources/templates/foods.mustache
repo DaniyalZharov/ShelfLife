@@ -1,0 +1,314 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>ShelfLife – Inventory</title>-->
+<!--    <link rel="stylesheet" href="/styles.css">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<nav>-->
+<!--    <div class="nav-container">-->
+<!--        <div class="logo">ShelfLife</div>-->
+<!--        <div class="nav-links">-->
+<!--            <a href="/">Home</a>-->
+<!--            <a href="/foods" class="active">Inventory</a>-->
+<!--            <a href="/recipes">Recipes</a>-->
+<!--            <a href="/about">About</a>-->
+<!--            <a href="/contact">Contact</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+<!--<div class="hero small">-->
+<!--    <h1>Your Inventory</h1>-->
+<!--    <p>Track your food items and find recipes before they expire</p>-->
+<!--</div>-->
+<!--<div class="container">-->
+<!--    <div class="table-responsive">-->
+<!--        <table>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>Name</th>-->
+<!--                <th>Expiry Date</th>-->
+<!--                <th>Days Left</th>-->
+<!--                <th>Quantity</th>-->
+<!--                <th>Main Ingredient</th>-->
+<!--                <th>Actions</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            {{#foods}}-->
+<!--                <tr class="{{#isExpired}}expired{{/isExpired}}{{#isNearExpiry}} near-expiry{{/isNearExpiry}}" data-id="{{id}}">-->
+<!--                    <td>{{name}}</td>-->
+<!--                    <td>{{expiryDate}}</td>-->
+<!--                    <td>-->
+<!--                        <span class="days-counter {{#isExpired}}expired-text{{/isExpired}}{{#isNearExpiry}}warning-text{{/isNearExpiry}}">-->
+<!--                            {{#isExpired}}Expired{{/isExpired}}-->
+<!--                            {{^isExpired}}{{daysRemaining}} days{{/isExpired}}-->
+<!--                        </span>-->
+<!--                    </td>-->
+<!--                    <td>{{quantity}}</td>-->
+<!--                    <td>{{mainIngredient}}</td>-->
+<!--                    <td>-->
+<!--                        <a href="/recipes?ingredient={{mainIngredient}}" class="btn btn-recipe">Find Recipes</a>-->
+<!--                        <button class="btn btn-delete" onclick="deleteFood({{id}})">Delete</button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            {{/foods}}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--    <div style="margin-top: 2rem;">-->
+<!--        <h2>Add New Food Item</h2>-->
+<!--        <form id="add-food-form">-->
+<!--            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">-->
+<!--                <div>-->
+<!--                    <label for="name">Food Name</label>-->
+<!--                    <input id="name" type="text" name="name" required>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <label for="expiryDate">Expiry Date</label>-->
+<!--                    <input id="expiryDate" type="date" name="expiryDate" required>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <label for="quantity">Quantity</label>-->
+<!--                    <input id="quantity" type="number" name="quantity" min="1" required>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <label for="mainIngredient">Main Ingredient</label>-->
+<!--                    <input id="mainIngredient" type="text" name="mainIngredient" required>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Food</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    // Add delete functionality-->
+<!--    function deleteFood(id) {-->
+<!--       {-->
+<!--            $.ajax({-->
+<!--                url: '/api/foods/' + id,-->
+<!--                method: 'DELETE',-->
+<!--                success: function() {-->
+<!--                    // Remove the row from the table-->
+<!--                    $('tr[data-id="' + id + '"]').remove();-->
+<!--                    -->
+<!--                },-->
+<!--                error: function() {-->
+<!--                    alert('Error deleting food item');-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Add form submission functionality-->
+<!--    $(document).ready(function() {-->
+<!--        $('#add-food-form').submit(function(e) {-->
+<!--            e.preventDefault();-->
+
+<!--            // Get form values-->
+<!--            const name = $('#name').val();-->
+<!--            const expiryDate = $('#expiryDate').val();-->
+<!--            const quantity = $('#quantity').val();-->
+<!--            const mainIngredient = $('#mainIngredient').val();-->
+
+<!--            // Get current date-->
+<!--            const today = new Date();-->
+<!--            const selectedDate = new Date(expiryDate);-->
+
+<!--            // Validate expiry date is not in the past-->
+<!--            if (selectedDate < today) {-->
+<!--                alert('Cannot add expired food items. Please select a future date.');-->
+<!--                return;-->
+<!--            }-->
+
+<!--            // Create food object-->
+<!--            const foodItem = {-->
+<!--                name: name,-->
+<!--                expiryDate: expiryDate,-->
+<!--                quantity: quantity,-->
+<!--                mainIngredient: mainIngredient-->
+<!--            };-->
+
+<!--            // Send API request-->
+<!--            $.ajax({-->
+<!--                url: '/api/foods',-->
+<!--                method: 'POST',-->
+<!--                contentType: 'application/json',-->
+<!--                data: JSON.stringify(foodItem),-->
+<!--                success: function() {-->
+<!--                    // Reload the page to show the new item-->
+<!--                    window.location.reload();-->
+<!--                },-->
+<!--                error: function() {-->
+<!--                    alert('Error adding food item');-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Set minimum date to today for expiry date input-->
+<!--        const today = new Date().toISOString().split('T')[0];-->
+<!--        $('#expiryDate').attr('min', today);-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShelfLife – Inventory</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <div class="logo">ShelfLife</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/foods" class="active">Inventory</a>
+            <a href="/recipes">Recipes</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </div>
+</nav>
+<div class="hero small">
+    <h1>Your Inventory</h1>
+    <p>Track your food items and find recipes before they expire</p>
+</div>
+<div class="container">
+    <div class="table-responsive">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Expiry Date</th>
+                <th>Days Left</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#foods}}
+                <tr class="{{#isExpired}}expired{{/isExpired}}{{#isNearExpiry}} near-expiry{{/isNearExpiry}}" data-id="{{id}}">
+                    <td>{{name}}</td>
+                    <td>{{expiryDate}}</td>
+                    <td>
+                        <span class="days-counter {{#isExpired}}expired-text{{/isExpired}}{{#isNearExpiry}}warning-text{{/isNearExpiry}}">
+                            {{#isExpired}}Expired{{/isExpired}}
+                            {{^isExpired}}{{daysRemaining}} days{{/isExpired}}
+                        </span>
+                    </td>
+                    <td>{{quantity}}</td>
+                    <td>
+                        <a href="/recipes?ingredient={{name}}" class="btn btn-recipe">Find Recipes</a>
+                        <button class="btn btn-delete" onclick="deleteFood({{id}})">Delete</button>
+                    </td>
+                </tr>
+            {{/foods}}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <h2>Add New Food Item</h2>
+        <form id="add-food-form">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <label for="name">Food Name</label>
+                    <input id="name" type="text" name="name" required>
+                </div>
+                <div>
+                    <label for="expiryDate">Expiry Date</label>
+                    <input id="expiryDate" type="date" name="expiryDate" required>
+                </div>
+                <div>
+                    <label for="quantity">Quantity</label>
+                    <input id="quantity" type="number" name="quantity" min="1" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Food</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add delete functionality
+    function deleteFood(id) {
+        
+            $.ajax({
+                url: '/api/foods/' + id,
+                method: 'DELETE',
+                success: function() {
+                    // Remove the row from the table
+                    $('tr[data-id="' + id + '"]').remove();
+
+                },
+                error: function() {
+                    alert('Error deleting food item');
+                }
+            });
+
+    }
+
+    // Add form submission functionality
+    $(document).ready(function() {
+        $('#add-food-form').submit(function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const name = $('#name').val();
+            const expiryDate = $('#expiryDate').val();
+            const quantity = $('#quantity').val();
+
+            // Get current date
+            const today = new Date();
+            const selectedDate = new Date(expiryDate);
+
+            // Validate expiry date is not in the past
+            if (selectedDate < today) {
+                alert('Cannot add expired food items. Please select a future date.');
+                return;
+            }
+
+            // Create food object - using the food name as the main ingredient
+            const foodItem = {
+                name: name,
+                expiryDate: expiryDate,
+                quantity: quantity,
+                mainIngredient: name // Set the food name as the main ingredient
+            };
+
+            // Send API request
+            $.ajax({
+                url: '/api/foods',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(foodItem),
+                success: function() {
+                    // Reload the page to show the new item
+                    window.location.reload();
+                },
+                error: function() {
+                    alert('Error adding food item');
+                }
+            });
+        });
+
+        // Set minimum date to today for expiry date input
+        const today = new Date().toISOString().split('T')[0];
+        $('#expiryDate').attr('min', today);
+    });
+</script>
+</body>
+</html>
